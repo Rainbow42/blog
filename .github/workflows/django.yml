@@ -23,7 +23,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install Dependencies
       run: | 
-        pip3 install –upgrade pip
+        pip3 install --upgrade pip
         pip3 install -r requirements.txt
     - name: Run Tests
       run: |
