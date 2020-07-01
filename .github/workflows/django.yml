@@ -22,7 +22,4 @@ steps:
         pipenv run "coverage html -d /tmp/artifacts"
         pipenv run "coveralls"
   - store_artifacts:
-      path: /tmp/artifactsments.txt
-    - name: Run Tests
-      run: |
-        python3 manage.py test
+      path: /tmp/artifacts
