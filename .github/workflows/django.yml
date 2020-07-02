@@ -1,30 +1,25 @@
 name: Django CI
 
-on:
-  push:
-    branches: [ develop ]
-  pull_request:
-    branches: [ develop ]
-
+version: 2
 jobs:
-  build:
-
-    runs-on: ubuntu-18.04
-    strategy:
-      max-parallel: 4
-      matrix:
-        python-version: [3.6, 3.7, 3.8]
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install Dependencies
-      run: |
-        python3 -m pip install --upgrade pip
-        pip3 install -r requirements.txt
-    - name: Run Tests
-      run: |
-        python3 manage.py test
+ build:
+  working_directory: ~/tt-server
+docker:
+  - image: circleci/python3.6
+    environment:
+        # Enviroment Variables
+steps:
+  - checkout
+  - run:
+      command: pipenv install
+  - run:
+      command: "echo mkdir /tmp/artifacts"
+  - run:
+      command: |
+        pipenv run "coverage run manage.py test --parallel=4"
+        pipenv run "coverage combine"
+        pipenv run "coverage report -m"
+        pipenv run "coverage html -d /tmp/artifacts"
+        pipenv run "coveralls"
+  - store_artifacts:
+      path: /tmp/artifacts
