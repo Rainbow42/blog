@@ -1,28 +1,10 @@
-from django.db import models
+from django.shortcuts import render
+from django.http import HttpResponse
+from django.shortcuts import render
+from .models import News
 
 
-class News(models.Model):
-    title = models.CharField(max_length=150, verbose_name='Наименование')
-    content = models.TextField(blank=True, verbose_name='Контент')
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата публикации')
-    update_at = models.DateTimeField(auto_now=True, verbose_name='Обновленое')
-    photo = models.ImageField(upload_to='photos/%Y/%m/%d/', verbose_name=' Фото', blank=True)
-    is_published = models.BooleanField(default=True, verbose_name='Опубликовано')
-    category = models.ForeignKey('Category', on_delete=models.PROTECT, null=True)
+def index(request):
+    news = News.objects.all()
+    return render(request, 'news/index.html', {'news': news, 'title': 'Список новостей'})
 
-    def __str__(self):
-        return self.title
-
-    class Meta:
-        verbose_name = 'Новость'
-        verbose_name_plural = 'Новости'
-        ordering = ['created_at']
-
-
-class Category(models.Model):
-    title = models.CharField(max_length=150, db_index=True, verbose_name='Наименование категории')
-
-    class Meta:
-        verbose_name = 'Категория'
-        verbose_name_plural = 'Категории'
-        ordering = ['title']
